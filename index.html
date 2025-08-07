@@ -1,0 +1,233 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Storage by Code</title>
+</head> -->
+<!-- Firebase App (core SDK) -->
+<!-- <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script> -->
+
+<!-- Firebase Database -->
+<!-- <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+<body>
+  <input id="nameInput" type="text" placeholder="Enter your name">
+  <button onclick="saveName()">Save</button>
+
+  <input id="codeInput" type="text" placeholder="Enter your code to load">
+  <button onclick="loadName()">Load</button>
+
+  <h2 id="output"></h2>
+
+  Firebase SDK
+    <script type="module">
+    // اینجا کد کانفیگ فایربیس رو بذار:
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8ZFE9xTS6nzYAIGhKpukJKK9rSDtkeTc",
+      authDomain: "test-9a2af.firebaseapp.com",
+      databaseURL: "https://console.firebase.google.com/u/0/project/test-9a2af/database/test-9a2af-default-rtdb/data/~2F",
+      projectId: "test-9a2af",
+      storageBucket: "test-9a2af.firebasestorage.app",
+      messagingSenderId: "392338091797",
+      appId: "1:392338091797:web:9802bb9304f7440a8f031c",
+      measurementId: "G-2PYWERJN2Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // توابع برای ذخیره و بارگذاری
+    window.saveName = function() {
+      const name = document.getElementById("nameInput").value;
+      const code = Math.floor(100000 + Math.random() * 900000); // یه عدد ۶ رقمی
+
+      set(ref(db, 'users/' + code), {
+        name: name,
+        createdAt: Date.now()
+      }).then(() => {
+        alert("Saved! Your code: " + code);
+        localStorage.setItem("userCode", code);
+      });
+    }
+
+    function generateCode() {
+  return Math.random().toString(36).substr(2, 6); // کد تصادفی 6 حرفی
+}
+
+function saveUserData(name) {
+  const code = generateCode();
+  const now = Date.now();
+
+  // ذخیره اطلاعات در فایربیس
+  firebase.database().ref('users/' + code).set({
+    name: name,
+    createdAt: now,
+    lastLogin: now
+  }).then(() => {
+    localStorage.setItem('userCode', code);
+    alert("کدت اینه: " + code);
+  });
+}
+
+function loginWithCode(code) {
+  firebase.database().ref('users/' + code).once('value').then((snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const now = Date.now();
+
+      // اگه بیش از ۱ هفته گذشته باشه، دوباره کد بخواد
+      if (now - data.lastLogin > 7 * 24 * 60 * 60 * 1000) {
+        alert("بیش از ۱ هفته گذشته. دوباره کدت رو وارد کن.");
+      }
+
+      // آپدیت زمان ورود آخر
+      firebase.database().ref('users/' + code + '/lastLogin').set(now);
+
+      localStorage.setItem('userCode', code);
+      alert("سلام " + data.name + " خوش اومدی");
+    } else {
+      alert("کدی با این مشخصات پیدا نشد.");
+    }
+  });
+}
+
+window.onload = function () {
+  const code = localStorage.getItem('userCode');
+  if (code) {
+    loginWithCode(code);
+  }
+};
+
+    window.loadName = function() {
+      const inputCode = document.getElementById("codeInput").value;
+      const userCode = inputCode || localStorage.getItem("userCode");
+
+      if (!userCode) return alert("No code found!");
+
+      get(child(ref(db), 'users/' + userCode)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+
+          // چک کردن تاریخ (مثلاً ۱ هفته گذشته یا نه)
+          const oneWeek = 7 * 24 * 60 * 60 * 1000;
+          const now = Date.now();
+
+          if (now - data.createdAt > oneWeek) {
+            localStorage.removeItem("userCode");
+            alert("Code expired. Please enter again.");
+          } else {
+            document.getElementById("output").innerText = "Hello, " + data.name;
+            localStorage.setItem("userCode", userCode); // دوباره ذخیره برای استفاده بعدی
+          }
+        } else {
+          alert("No data found!");
+        }
+      });
+    }
+  </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Storage by Code</title>
+</head>
+<body>
+  <input id="nameInput" type="text" placeholder="Enter your name">
+  <button onclick="saveName()">Save</button>
+
+  <input id="codeInput" type="text" placeholder="Enter your code to load">
+  <button onclick="loadName()">Load</button>
+
+  <h2 id="output"></h2>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8ZFE9xTS6nzYAIGhKpukJKK9rSDtkeTc",
+      authDomain: "test-9a2af.firebaseapp.com",
+      databaseURL: "https://test-9a2af-default-rtdb.firebaseio.com",
+      projectId: "test-9a2af",
+      storageBucket: "test-9a2af.appspot.com",
+      messagingSenderId: "392338091797",
+      appId: "1:392338091797:web:9802bb9304f7440a8f031c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function generateCode() {
+      return Math.random().toString(36).substring(2, 8); // کد ۶ حرفی
+    }
+
+    window.saveName = function () {
+      const name = document.getElementById("nameInput").value;
+      const code = generateCode();
+      const now = Date.now();
+
+      set(ref(db, 'users/' + code), {
+        name: name,
+        createdAt: now,
+        lastLogin: now
+      }).then(() => {
+        alert("Saved! Your code: " + code);
+        localStorage.setItem("userCode", code);
+      });
+    }
+
+    window.loadName = function () {
+      const inputCode = document.getElementById("codeInput").value;
+      const userCode = inputCode || localStorage.getItem("userCode");
+
+      if (!userCode) return alert("No code found!");
+
+      const userRef = ref(db, 'users/' + userCode);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const now = Date.now();
+          const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+          if (now - data.lastLogin > oneWeek) {
+            alert("Code expired. Please re-enter.");
+            localStorage.removeItem("userCode");
+          } else {
+            update(userRef, { lastLogin: now });
+            localStorage.setItem("userCode", userCode);
+            document.getElementById("output").innerText = "Hello, " + data.name;
+          }
+        } else {
+          alert("No data found!");
+        }
+      });
+    }
+
+    // ورود خودکار
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedCode = localStorage.getItem("userCode");
+      if (savedCode) {
+        window.loadName();
+      }
+    });
+  </script>
+</body>
+</html>
